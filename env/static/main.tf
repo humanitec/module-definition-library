@@ -1,5 +1,5 @@
 variable "values" {
-    type = object(string)
+    type = map(string)
 }
 
 output "values" {

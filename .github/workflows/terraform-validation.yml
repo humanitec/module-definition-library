@@ -21,12 +21,4 @@ jobs:
           terraform_version: latest
 
       - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Validate
-        run: terraform validate
-      - name: Validate examples
-        run: |
-          for d in examples/*/ ; do
-            (cd "$d" && terraform init -backend=false && terraform validate)
-          done
+        run: ./test.sh

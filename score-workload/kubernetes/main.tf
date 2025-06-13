@@ -11,6 +11,10 @@ terraform {
   }
 }
 
+resource "random_id" "id" {
+  byte_length = 8
+}
+
 locals {
   workload_type   = lookup(coalesce(try(var.metadata.annotations, null), {}), "score.canyon.com/workload-type", "Deployment")
   pod_labels      = { app = random_id.id.hex }
@@ -68,9 +72,6 @@ locals {
   }
 }
 
-resource "random_id" "id" {
-  byte_length = 8
-}
 
 resource "kubernetes_secret" "env" {
   for_each = {
