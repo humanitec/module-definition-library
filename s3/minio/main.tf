@@ -12,7 +12,7 @@ variable "provider_region" {
 
 variable "bucket_prefix" {
     type = string
-    default = "bucket"
+    default = "bucket-"
 }
 
 resource "minio_s3_bucket" "bucket" {
