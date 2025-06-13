@@ -31,3 +31,7 @@ output "bucket" {
 output "region" {
   value = var.provider_region
 }
+
+output "domain" {
+  value = minio_s3_bucket.bucket.bucket_domain_name
+}
