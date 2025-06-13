@@ -42,10 +42,10 @@ resource "minio_iam_user_policy_attachment" "binding" {
 }
 
 output "access_key_id" {
-  value = minio_s3_bucket.key.access_key
+  value = minio_accesskey.key.access_key
 }
 
 output "secret_key" {
-  value = minio_s3_bucket.key.secret_key
+  value = minio_accesskey.key.secret_key
   sensitive = true
 }
