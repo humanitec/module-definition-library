@@ -16,7 +16,7 @@ variable "bucket_prefix" {
 }
 
 resource "minio_s3_bucket" "bucket" {
-  bucket_prefix = "${substr(replace(var.bucket_prefix, "[^a-z0-9\\-]+", "-"), 0, 36)}"
+  bucket_prefix = "${substr(replace(var.bucket_prefix, "/[^a-z0-9\\-.]+/", "-"), 0, 36)}"
   force_destroy = true
 }
 
