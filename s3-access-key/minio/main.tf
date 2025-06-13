@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    minio = {
+      source  = "aminueza/minio"
+    }
+  }
+}
+
 resource "random_id" "id" {
   byte_length = 10
 }
