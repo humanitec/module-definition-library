@@ -25,4 +25,5 @@ output "humanitec_metadata" {
 
 output "values" {
     value = data.kubernetes_secret.subject.data
+    sensitive = true
 }

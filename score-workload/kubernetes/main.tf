@@ -88,7 +88,7 @@ resource "kubernetes_secret" "env" {
 }
 
 resource "kubernetes_secret" "files" {
-  for_each = local.all_files_with_content
+  for_each = nonsensitive(local.all_files_with_content)
 
   metadata {
     name        = "${var.metadata.name}-${each.key}"

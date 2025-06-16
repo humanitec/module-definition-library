@@ -4,4 +4,5 @@ variable "values" {
 
 output "values" {
     value = var.values
+    sensitive = true
 }

@@ -50,4 +50,5 @@ output "access_key_id" {
 
 output "secret_key" {
   value = minio_accesskey.key.secret_key
+  sensitive = true
 }
