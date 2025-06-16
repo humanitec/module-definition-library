@@ -6,6 +6,11 @@ terraform {
   }
 }
 
+variable "for" {
+  type = list(string)
+  default = []
+}
+
 resource "random_id" "id" {
   byte_length = 10
 }
@@ -24,15 +29,13 @@ resource "minio_iam_policy" "policy" {
   name = "policy-${random_id.id.hex}"
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "s3:*",
-        ]
-        Effect   = "Allow"
-        Resource = ["arn:aws:s3:::*"]
-      }
-    ]
+    Statement = [for x in var.for: {
+      Action = [
+        "s3:*",
+      ]
+      Effect   = "Allow"
+      Resource = ["arn:aws:s3:::${x}/*"]
+    }]
   })
 }
 
