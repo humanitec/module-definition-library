@@ -74,34 +74,32 @@ locals {
 
 
 resource "kubernetes_secret" "env" {
-  for_each = {
-    for k, v in var.containers : k => v if v.variables != null
-  }
+  for_each = nonsensitive(toset([for k, v in var.containers: k if v.variables != null]))
 
   metadata {
-    name        = "${var.metadata.name}-${each.key}-env"
+    name        = "${var.metadata.name}-${each.value}-env"
     namespace   = var.namespace
     annotations = var.additional_annotations
   }
 
-  data = each.value.variables
+  data = var.containers[each.value].variables
 }
 
 resource "kubernetes_secret" "files" {
-  for_each = nonsensitive(local.all_files_with_content)
+  for_each = nonsensitive(toset(keys(local.all_files_with_content)))
 
   metadata {
-    name        = "${var.metadata.name}-${each.key}"
+    name        = "${var.metadata.name}-${each.value}"
     namespace   = var.namespace
     annotations = var.additional_annotations
   }
 
   data = {
-    for k, v in { content = each.value.data } : k => v if !each.value.is_binary
+    for k, v in { content = local.all_files_with_content[each.value].data } : k => v if !local.all_files_with_content[each.value].is_binary
   }
 
   binary_data = {
-    for k, v in { content = each.value.data } : k => v if each.value.is_binary
+    for k, v in { content = local.all_files_with_content[each.value].data } : k => v if local.all_files_with_content[each.value].is_binary
   }
 }
 
