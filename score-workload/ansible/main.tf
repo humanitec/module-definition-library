@@ -119,3 +119,10 @@ resource "ansible_host" "target_hosts" {
     ansible_ssh_common_args     = "-o StrictHostKeyChecking=no"
   }
 }
+
+resource "ansible_playbook" "deploy" {
+  playbook   = "${path.module}/playbook.yml"  # Path to your playbook file
+  name       = "deploy-to-hosts"
+  replayable = true
+  depends_on = [ansible_host.target_hosts]
+}
