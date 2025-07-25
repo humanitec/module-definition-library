@@ -106,6 +106,12 @@ resource "null_resource" "install_ansible" {
   }
 }
 
+resource "local_file" "ssh_key" {
+  filename        = "/tmp/ssh_key"
+  content         = var.ssh_private_key
+  file_permission = "0600"
+}
+
 resource "ansible_host" "target_hosts" {
   count = length(var.ips)
   
@@ -115,7 +121,7 @@ resource "ansible_host" "target_hosts" {
   variables = {
     ansible_host                 = var.ips[count.index]
     ansible_user                = var.ssh_user
-    ansible_ssh_private_key = var.ssh_private_key
+    ansible_ssh_private_key_file = local_file.ssh_key.filename
     ansible_ssh_common_args     = "-o StrictHostKeyChecking=no"
   }
 }
