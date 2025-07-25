@@ -6,3 +6,41 @@
     - name: Update package cache
       apt:
         update_cache: yes
+
+    - name: Install Docker
+      package:
+        name: docker.io
+        state: present
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add user to docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Install Docker Python library
+      pip:
+        name: docker
+        state: present
+
+    - name: Pull Docker image
+      docker_image:
+        name: "ghcr.io/astromechza/demo-app:latest"
+        source: pull
+
+    - name: Deploy Docker container
+      docker_container:
+        name: "web"
+        image: "ghcr.io/astromechza/demo-app:latest"
+        state: started
+        restart_policy: always
+        ports:
+          - "80:8080"
+        recreate: yes
+        pull: yes
