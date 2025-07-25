@@ -53,7 +53,6 @@ resource "google_compute_firewall" "http" {
 }
 resource "google_compute_instance_group" "vms" {
   name = "vm-group"
-  zone = "us-central1-a"
   
   instances = google_compute_instance.vm[*].id
 }
