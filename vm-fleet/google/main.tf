@@ -55,6 +55,11 @@ resource "google_compute_instance_group" "vms" {
   name = "vm-group"
   
   instances = google_compute_instance.vm[*].id
+
+  named_port {
+    name = "http"
+    port = "80"
+  }
 }
 
 resource "google_compute_backend_service" "default" {
