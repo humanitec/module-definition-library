@@ -124,5 +124,5 @@ resource "ansible_playbook" "deploy" {
   playbook   = "${path.module}/playbook.yml"  # Path to your playbook file
   name       = "deploy-to-hosts"
   replayable = true
-  depends_on = [ansible_host.target_hosts]
+  depends_on = [ansible_host.target_hosts, null_resource.install_ansible]
 }
