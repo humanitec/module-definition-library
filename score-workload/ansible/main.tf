@@ -112,29 +112,19 @@ resource "local_file" "ssh_key" {
   file_permission = "0600"
 }
 
-resource "ansible_host" "target_hosts" {
+resource "ansible_playbook" "deploy" {
   count = length(var.ips)
+  playbook   = "${path.module}/playbook.yml"  # Path to your playbook file
   
   name   = "host-${count.index + 1}"
-  groups = ["targets"]
-  
-  variables = {
+  replayable = true
+  depends_on = [null_resource.install_ansible]
+
+  extra_vars = {
     ansible_host                 = var.ips[count.index]
     ansible_user                = var.ssh_user
     ansible_ssh_private_key_file = local_file.ssh_key.filename
     ansible_ssh_common_args     = "-o StrictHostKeyChecking=no"
-  }
-}
-
-resource "ansible_playbook" "deploy" {
-  playbook   = "${path.module}/playbook.yml"  # Path to your playbook file
-  name       = "host-0"
-  groups     = ["targets"]
-  replayable = true
-  depends_on = [ansible_host.target_hosts, null_resource.install_ansible]
-
-  extra_vars = {
-    run_timestamp  = timestamp()
   }
   verbosity  = 3
 }
