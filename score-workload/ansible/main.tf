@@ -96,3 +96,26 @@ variable "service" {
   description = "The service section of the Score file."
   default     = null
 }
+
+resource "null_resource" "install_ansible" {
+  provisioner "local-exec" {
+    command = "apk add --no-cache ansible-core"
+  }
+  triggers = {
+    always_run = timestamp()  # Runs every apply
+  }
+}
+
+resource "ansible_host" "target_hosts" {
+  count = length(var.ips)
+  
+  name   = "host-${count.index + 1}"
+  groups = ["targets"]
+  
+  variables = {
+    ansible_host                 = var.ips[count.index]
+    ansible_user                = var.ssh_user
+    ansible_ssh_private_key = var.ssh_private_key
+    ansible_ssh_common_args     = "-o StrictHostKeyChecking=no"
+  }
+}
