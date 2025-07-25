@@ -3,6 +3,8 @@
   hosts: targets
   become: yes
   tasks:
+    - name: Test connection
+      ansible.builtin.ping:
     - name: Update package cache
       apt:
         update_cache: yes
