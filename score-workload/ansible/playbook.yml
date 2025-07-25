@@ -7,36 +7,42 @@
       apt:
         update_cache: yes
 
+    - name: Install Ansible Docker collection
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection install community.docker
+      delegate_to: localhost
+      run_once: true
+
     - name: Install Docker
-      package:
+      ansible.builtin.package:
         name: docker.io
         state: present
 
     - name: Start and enable Docker service
-      systemd:
+      ansible.builtin.systemd:
         name: docker
         state: started
         enabled: yes
 
     - name: Add user to docker group
-      user:
+      ansible.builtin.user:
         name: "{{ ansible_user }}"
         groups: docker
         append: yes
 
     - name: Install Docker Python library
-      pip:
+      ansible.builtin.pip:
         name: docker
         state: present
 
     - name: Pull Docker image
-      docker_image:
+      community.docker.docker_image:
         name: "ghcr.io/astromechza/demo-app:latest"
         source: pull
 
     - name: Deploy Docker container
-      docker_container:
-        name: "web"
+      community.docker.docker_container:
+        name: web
         image: "ghcr.io/astromechza/demo-app:latest"
         state: started
         restart_policy: always
