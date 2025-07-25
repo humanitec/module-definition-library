@@ -131,4 +131,8 @@ resource "ansible_playbook" "deploy" {
   name       = "deploy-to-hosts"
   replayable = true
   depends_on = [ansible_host.target_hosts, null_resource.install_ansible]
+
+  triggers = {
+    always_run = timestamp()  # Runs every apply
+  }
 }
