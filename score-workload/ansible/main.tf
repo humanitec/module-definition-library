@@ -7,7 +7,7 @@ terraform {
 }
 
 variable "ips" {
-  type = tuple(string)
+  type = list(string)
 }
 
 variable "ssh_user" {
