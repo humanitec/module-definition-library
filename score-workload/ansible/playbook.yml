@@ -1,0 +1,8 @@
+---
+- name: Deploy application
+  hosts: targets
+  become: yes
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
