@@ -99,7 +99,7 @@ variable "service" {
 
 resource "null_resource" "install_ansible" {
   provisioner "local-exec" {
-    command = "apk add --no-cache ansible-core"
+    command = "apk add --no-cache ansible"
   }
   triggers = {
     always_run = timestamp()  # Runs every apply
