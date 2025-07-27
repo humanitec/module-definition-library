@@ -116,7 +116,7 @@ resource "ansible_playbook" "deploy" {
   count = length(var.ips)
   playbook   = "${path.module}/playbook.yml"  # Path to your playbook file
   
-  name   = "host-${count.index + 1}"
+  name   = var.ips[count.index]
   replayable = true
   depends_on = [null_resource.install_ansible]
 
