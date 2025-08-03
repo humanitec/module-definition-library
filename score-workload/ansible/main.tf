@@ -1,7 +1,7 @@
 terraform {
   required_providers {
-    ansible = {
-      source  = "ansible/ansible"
+    ansibleplay = {
+      source  = "humanitec/ansibleplay"
     }
   }
 }
@@ -112,19 +112,12 @@ resource "local_file" "ssh_key" {
   file_permission = "0600"
 }
 
-resource "ansible_playbook" "deploy" {
-  count = length(var.ips)
-  playbook   = "${path.module}/playbook.yml"  # Path to your playbook file
-  
-  name   = var.ips[count.index]
-  replayable = true
-  depends_on = [null_resource.install_ansible]
-
-  extra_vars = {
-    ansible_host                 = var.ips[count.index]
+resource "ansibleplay" "run" {
+  hosts = var.ips
+  playbook_file   = "${path.module}/playbook.yml"  # Path to your playbook file
+  extra_vars = jsonencode({
     ansible_user                = var.ssh_user
     ansible_ssh_private_key_file = local_file.ssh_key.filename
     ansible_ssh_common_args     = "-o StrictHostKeyChecking=no"
-  }
-  verbosity  = 6
+  })
 }
