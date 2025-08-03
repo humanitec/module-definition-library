@@ -120,4 +120,6 @@ resource "ansibleplay_run" "setup" {
     ansible_ssh_private_key_file = local_file.ssh_key.filename
     ansible_ssh_common_args     = "-o StrictHostKeyChecking=no"
   })
+
+  depends_on = [null_resource.install_ansible]
 }
