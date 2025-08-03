@@ -124,5 +124,5 @@ resource "ansibleplay_run" "setup" {
     ansible_ssh_common_args     = "-o StrictHostKeyChecking=no"
   })
 
-  depends_on = [null_resource.install_ansible]
+  depends_on = [terraform_data.install_ansible]
 }
