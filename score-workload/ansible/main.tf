@@ -2,6 +2,9 @@ terraform {
   required_providers {
     ansibleplay = {
       source  = "humanitec/ansibleplay"
+    }    
+    ansible = {
+      source  = "ansible/ansible"
     }
   }
 }
