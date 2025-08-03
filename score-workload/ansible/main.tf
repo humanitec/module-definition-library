@@ -100,12 +100,12 @@ variable "service" {
   default     = null
 }
 
-resource "null_resource" "install_ansible" {
+resource "terraform_data" "install_ansible" {
   provisioner "local-exec" {
     command = "apk add --no-cache ansible"
   }
-  triggers = {
-    always_run = timestamp()  # Runs every apply
+  triggers_replace = {
+    always_run = timestamp()
   }
 }
 
