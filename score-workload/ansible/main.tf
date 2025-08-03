@@ -115,7 +115,7 @@ resource "local_file" "ssh_key" {
 resource "ansibleplay_run" "setup" {
   hosts = var.ips
   playbook_file   = "${path.module}/playbook.yml"  # Path to your playbook file
-  extra_vars = jsonencode({
+  extra_vars_json = jsonencode({
     ansible_user                = var.ssh_user
     ansible_ssh_private_key_file = local_file.ssh_key.filename
     ansible_ssh_common_args     = "-o StrictHostKeyChecking=no"
