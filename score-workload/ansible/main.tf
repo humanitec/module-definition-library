@@ -112,7 +112,7 @@ resource "local_file" "ssh_key" {
   file_permission = "0600"
 }
 
-resource "ansibleplay" "run" {
+resource "ansibleplay_run" "setup" {
   hosts = var.ips
   playbook_file   = "${path.module}/playbook.yml"  # Path to your playbook file
   extra_vars = jsonencode({
