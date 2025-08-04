@@ -9,3 +9,7 @@ output "humanitec_metadata" {
     local.workload_type == "StatefulSet" ? { "Kubernetes-StatefulSet" = kubernetes_stateful_set.default[0].metadata[0].name } : {}
   )
 }
+
+output "loadbalancer" {
+  value = "${var.metadata.name}.${var.metadata.namespace}.svc.cluster.local"
+}

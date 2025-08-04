@@ -13,6 +13,10 @@ variable "ips" {
   type = list(string)
 }
 
+variable "loadbalancer" {
+  type = string
+}
+
 variable "ssh_user" {
   type = string
 }
@@ -125,4 +129,8 @@ resource "ansibleplay_run" "setup" {
   })
 
   depends_on = [terraform_data.install_ansible]
+}
+
+output "loadbalancer" {
+  value = var.loadbalancer
 }
