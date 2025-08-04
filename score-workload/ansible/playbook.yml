@@ -44,5 +44,11 @@
         dest: "/home/{{ ansible_user }}/compose/{{ project_name }}/compose.yaml"
         content: "{{ compose_content }}"
 
+    - name: Ensure mounted files exist
+      ansible.builtin.copy:
+        dest: "/home/{{ ansible_user }}/compose/{{ project_name }}/files/"
+        src: "/tmp/{{ item }}"
+      with_items: "{{ compose_files }}"
+
     - name: Docker start compose file
       ansible.builtin.command: 'docker compose --project-directory up "/home/{{ ansible_user }}/compose/{{ project_name }}" --remove-orphans --wait --wait-timeout 120 --yes'
