@@ -126,6 +126,19 @@ resource "ansibleplay_run" "setup" {
     ansible_user                = var.ssh_user
     ansible_ssh_private_key_file = local_file.ssh_key.filename
     ansible_ssh_common_args     = "-o StrictHostKeyChecking=no"
+
+    project_name = var.metadata.name
+    compose_content = jsonencode({
+      services = {for k, v in var.containers : k => {
+          image = v.image
+          entrypoint = v.command
+          command = v.args
+          environment = v.variables
+          cpus = try(v.resources.limits.cpu, v.resources.requests.cpu, 0)
+          mem_limit = lower(try(v.resources.limits.memory, v.resources.requests.memory, ""))
+        }
+      }
+    })
   })
 
   depends_on = [terraform_data.install_ansible]
