@@ -1,5 +1,8 @@
 terraform {
   required_providers {
+    ansibleplay = {
+      source  = "humanitec/ansibleplay"
+    }    
     ansible = {
       source  = "ansible/ansible"
     }
@@ -8,6 +11,10 @@ terraform {
 
 variable "ips" {
   type = list(string)
+}
+
+variable "loadbalancer" {
+  type = string
 }
 
 variable "ssh_user" {
@@ -34,7 +41,6 @@ variable "containers" {
       content = optional(string)
       binaryContent = optional(string)
       mode = optional(string)
-      noExpand = optional(bool)
     })))
     volumes = optional(map(object({
       source = string
@@ -49,36 +55,6 @@ variable "containers" {
       requests = optional(object({
         memory = optional(string)
         cpu = optional(string)
-      }))
-    }))
-    livenessProbe = optional(object({
-      httpGet = optional(object({
-        host = optional(string)
-        scheme = optional(string)
-        path = string
-        port = number
-        httpHeaders = optional(list(object({
-          name = string
-          value = string
-        })))
-      }))
-      exec = optional(object({
-        command = list(string)
-      }))
-    }))
-    readinessProbe = optional(object({
-      httpGet = optional(object({
-        host = optional(string)
-        scheme = optional(string)
-        path = string
-        port = number
-        httpHeaders = optional(list(object({
-          name = string
-          value = string
-        })))
-      }))
-      exec = optional(object({
-        command = list(string)
       }))
     }))
   }))
@@ -97,12 +73,12 @@ variable "service" {
   default     = null
 }
 
-resource "null_resource" "install_ansible" {
+resource "terraform_data" "install_ansible" {
   provisioner "local-exec" {
     command = "apk add --no-cache ansible"
   }
-  triggers = {
-    always_run = timestamp()  # Runs every apply
+  triggers_replace = {
+    always_run = timestamp()
   }
 }
 
@@ -112,19 +88,70 @@ resource "local_file" "ssh_key" {
   file_permission = "0600"
 }
 
-resource "ansible_playbook" "deploy" {
-  count = length(var.ips)
-  playbook   = "${path.module}/playbook.yml"  # Path to your playbook file
-  
-  name   = var.ips[count.index]
-  replayable = true
-  depends_on = [null_resource.install_ansible]
+locals {
+  first_service_name = try(element(sort(keys(var.containers)), 0), "")
+}
 
-  extra_vars = {
-    ansible_host                 = var.ips[count.index]
+resource "local_file" "container_files" {
+  for_each = merge([for k, v in var.containers : { for p, f in coalesce(v.files, {}) : sha256(join(",", [k, p])) => f.content if f.content != null }]...)
+  filename        = "/tmp/${each.key}"
+  content         = each.value
+  file_permission = "0600"
+}
+
+resource "local_file" "binary_container_files" {
+  for_each = merge([for k, v in var.containers : { for p, f in coalesce(v.files, {}) : sha256(join(",", [k, p])) => f.binaryContent if f.binaryContent != null }]...)
+  filename        = "/tmp/${each.key}"
+  content_base64  = each.value
+  file_permission = "0600"
+}
+
+resource "ansibleplay_run" "setup" {
+  hosts = var.ips
+  playbook_file   = "${path.module}/playbook.yml"  # Path to your playbook file
+  extra_vars_json = jsonencode({
     ansible_user                = var.ssh_user
     ansible_ssh_private_key_file = local_file.ssh_key.filename
     ansible_ssh_common_args     = "-o StrictHostKeyChecking=no"
-  }
-  verbosity  = 6
+
+    project_name = var.metadata.name
+    compose_content = jsonencode({
+      services = {for k, v in var.containers : k => merge({
+          image = v.image
+          entrypoint = v.command
+          command = v.args
+          environment = v.variables
+          cpus = try(v.resources.limits.cpu, v.resources.requests.cpu, 0)
+          mem_limit = lower(try(v.resources.limits.memory, v.resources.requests.memory, ""))
+          volumes = [ for p, f in try(v.files, {}) : ( f.source != null ? {
+            type = "bind"
+            source = f.source
+            target = p
+            read_only = coalesce(f.readOnly, false)
+          } : {
+            type = "bind"
+            source = "/home/${var.ssh_user}/compose/${var.metadata.name}/files/${sha256(join(",", k, p))}"
+            target = p
+            read_only = coalesce(f.readOnly, false)
+          })]
+          ports = k == local.first_service_name ? [for n, v in try(var.service.ports, {}) : {
+            name = n
+            published = tostring(v.port)
+            target = coalesce(v.targetPort, v.port)
+            protocol = lower(coalesce(v.protocol, "tcp"))
+          }] : []
+        },
+        k == local.first_service_name ? {} : {
+          network_mode = "service:${local.first_service_name}"
+        })
+      }
+    })
+    compose_files = merge([for k, v in var.containers : [for p, f in coalesce(v.files, {}) : sha256(join(",", k, p))]]...)
+  })
+
+  depends_on = [terraform_data.install_ansible]
+}
+
+output "loadbalancer" {
+  value = var.loadbalancer
 }

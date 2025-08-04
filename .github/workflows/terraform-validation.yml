@@ -8,17 +8,14 @@ on:
 
 jobs:
   terraform_validate:
-    name: Terraform Validate
+    name: Tofu Validate
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: latest
+      - uses: opentofu/setup-opentofu@v1
 
-      - name: Terraform Init
+      - name: Tofu Test
         run: ./test.sh

@@ -31,7 +31,7 @@ resource "google_compute_instance" "vm" {
     ssh-keys = "ubuntu:${tls_private_key.ssh.public_key_openssh}"
   }
 
-  tags = ["ssh"]
+  tags = ["ssh", "http"]
 }
 
 resource "google_compute_firewall" "ssh" {

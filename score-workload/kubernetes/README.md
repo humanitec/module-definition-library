@@ -23,6 +23,14 @@ canyon create module-definition \
     --set=module_inputs='{"namespace": "CHANGEME"}'
 ```
 
+## Resource Outputs
+
+The following outputs are exposed
+
+| Name            | Description                                             | Type     |
+| --------------- | ------------------------------------------------------- | -------- |
+| `loadbalancer`  | The dns name of the clusterip service for this workload | `string` |
+
 ## Module Inputs
 
 The following input variables can be set in the `module_inputs` of the `canyon create module-definition` command.
