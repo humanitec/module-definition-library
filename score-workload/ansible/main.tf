@@ -123,7 +123,7 @@ resource "ansibleplay_run" "setup" {
           environment = v.variables
           cpus = try(v.resources.limits.cpu, v.resources.requests.cpu, 0)
           mem_limit = lower(try(v.resources.limits.memory, v.resources.requests.memory, ""))
-          volumes = [ for p, f in try(v.files, {}) : ( f.source != null ? {
+          volumes = [ for p, f in coalesce(v.files, {}) : ( f.source != null ? {
             type = "bind"
             source = f.source
             target = p
@@ -146,7 +146,7 @@ resource "ansibleplay_run" "setup" {
         })
       }
     })
-    compose_files = merge([for k, v in var.containers : [for p, f in coalesce(v.files, {}) : sha256(join(",", k, p))]]...)
+    compose_files = flatten([for k, v in var.containers : [for p, f in coalesce(v.files, {}) : sha256(join(",", k, p))]]...)
   })
 
   depends_on = [terraform_data.install_ansible]
