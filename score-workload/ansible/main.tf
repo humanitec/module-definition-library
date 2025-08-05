@@ -84,11 +84,9 @@ resource "terraform_data" "install_ansible" {
 
 resource "terraform_data" "check_path" {
   provisioner "local-exec" {
-    command = "env"
+    command = "ls /usr/bin/ansible-playbook"
   }
-  triggers_replace = {
-    always_run = timestamp()
-  }
+  depends_on = [terraform_data.install_ansible]
 }
 
 resource "local_file" "ssh_key" {
