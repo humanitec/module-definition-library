@@ -82,6 +82,15 @@ resource "terraform_data" "install_ansible" {
   }
 }
 
+resource "terraform_data" "check_path" {
+  provisioner "local-exec" {
+    command = "env"
+  }
+  triggers_replace = {
+    always_run = timestamp()
+  }
+}
+
 resource "local_file" "ssh_key" {
   filename        = "/tmp/ssh_key"
   content         = var.ssh_private_key
