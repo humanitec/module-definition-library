@@ -87,6 +87,9 @@ resource "terraform_data" "check_path" {
     command = "ls /usr/bin/ansible-playbook"
   }
   depends_on = [terraform_data.install_ansible]
+  triggers_replace = {
+    always_run = timestamp()
+  }
 }
 
 resource "local_file" "ssh_key" {
