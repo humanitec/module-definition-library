@@ -11,5 +11,5 @@ output "humanitec_metadata" {
 }
 
 output "loadbalancer" {
-  value = "${var.metadata.name}.${var.metadata.namespace}.svc.cluster.local"
+  value = "${var.metadata.name}.${var.namespace}.svc.cluster.local"
 }
