@@ -82,32 +82,6 @@ resource "terraform_data" "install_ansible" {
   }
 }
 
-resource "terraform_data" "check_path" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      echo "=== DEEP ANSIBLE DEBUG ==="
-      echo "File stats:"
-      stat /usr/bin/ansible-playbook || echo "stat failed"
-      echo "File type:"
-      file /usr/bin/ansible-playbook
-      echo "Is it a symlink?"
-      readlink -f /usr/bin/ansible-playbook
-      echo "Contents (if script):"
-      head -10 /usr/bin/ansible-playbook
-      echo "Execution test:"
-      /usr/bin/ansible-playbook --version 2>&1 || echo "Execution failed with exit code $?"
-      echo "Permissions:"
-      ls -la /usr/bin/ansible-playbook
-      echo "Directory contents:"
-      ls -la /usr/bin/ | grep ansible
-    EOT
-  }
-  depends_on = [terraform_data.install_ansible]
-  triggers_replace = {
-    always_run = timestamp()
-  }
-}
-
 resource "local_file" "ssh_key" {
   filename        = "/tmp/ssh_key"
   content         = var.ssh_private_key
@@ -175,7 +149,7 @@ resource "ansibleplay_run" "setup" {
     compose_files = flatten([for k, v in var.containers : [for p, f in coalesce(v.files, {}) : sha256(join(",", k, p))]]...)
   })
 
-  depends_on = [terraform_data.install_ansible, terraform_data.check_path]
+  depends_on = [terraform_data.install_ansible]
 }
 
 output "loadbalancer" {
