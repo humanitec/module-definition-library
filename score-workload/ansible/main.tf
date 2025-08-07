@@ -84,7 +84,23 @@ resource "terraform_data" "install_ansible" {
 
 resource "terraform_data" "check_path" {
   provisioner "local-exec" {
-    command = "sh -c 'ls -altr /usr/bin/ansible-playbook; ls -altr /usr/bin/python3; /usr/bin/ansible-playbook || true'"
+    command = <<-EOT
+      echo "=== DEEP ANSIBLE DEBUG ==="
+      echo "File stats:"
+      stat /usr/bin/ansible-playbook || echo "stat failed"
+      echo "File type:"
+      file /usr/bin/ansible-playbook
+      echo "Is it a symlink?"
+      readlink -f /usr/bin/ansible-playbook
+      echo "Contents (if script):"
+      head -10 /usr/bin/ansible-playbook
+      echo "Execution test:"
+      /usr/bin/ansible-playbook --version 2>&1 || echo "Execution failed with exit code $?"
+      echo "Permissions:"
+      ls -la /usr/bin/ansible-playbook
+      echo "Directory contents:"
+      ls -la /usr/bin/ | grep ansible
+    EOT
   }
   depends_on = [terraform_data.install_ansible]
   triggers_replace = {
