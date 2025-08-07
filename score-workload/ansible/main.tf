@@ -84,7 +84,7 @@ resource "terraform_data" "install_ansible" {
 
 resource "terraform_data" "check_path" {
   provisioner "local-exec" {
-    command = "ls /usr/bin/ansible-playbook"
+    command = "ls -altr /usr/bin/ansible-playbook"
   }
   depends_on = [terraform_data.install_ansible]
   triggers_replace = {
