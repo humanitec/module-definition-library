@@ -70,6 +70,15 @@ variable "service" {
   default     = null
 }
 
+resource "terraform_data" "install_ansible" {
+  provisioner "local-exec" {
+    command = "apk add --no-cache ansible openssh-client && sleep 2"
+  }
+  triggers_replace = {
+    always_run = timestamp()
+  }
+}
+
 resource "local_file" "ssh_key" {
   filename        = "/tmp/ssh_key"
   content         = var.ssh_private_key
@@ -136,7 +145,7 @@ resource "ansibleplay_run" "setup" {
     })
     compose_files = flatten([for k, v in var.containers : [for p, f in coalesce(v.files, {}) : sha256(join(",", k, p))]]...)
   })
-  depends_on = [local_file.container_files, local_file.binary_container_files, local_file.ssh_key]
+  depends_on = [local_file.container_files, local_file.binary_container_files, local_file.ssh_key, terraform_data.install_ansible]
 }
 
 output "loadbalancer" {
