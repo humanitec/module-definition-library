@@ -117,7 +117,7 @@ resource "ansibleplay_run" "setup" {
           image = v.image
           entrypoint = v.command
           command = v.args
-          environment = v.variables
+          environment = coalesce(v.variables, {})
           cpus = try(v.resources.limits.cpu, v.resources.requests.cpu, 0)
           mem_limit = lower(try(v.resources.limits.memory, v.resources.requests.memory, ""))
           volumes = [ for p, f in coalesce(v.files, {}) : ( f.source != null ? {
