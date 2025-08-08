@@ -51,4 +51,4 @@
       with_items: "{{ compose_files }}"
 
     - name: Docker start compose file
-      ansible.builtin.command: 'docker compose --project-directory up "/home/{{ ansible_user }}/compose/{{ project_name }}" --remove-orphans --wait --wait-timeout 120 --yes'
+      ansible.builtin.command: 'docker compose --project-directory "/home/{{ ansible_user }}/compose/{{ project_name }}" up --remove-orphans --wait --wait-timeout 120 --yes'
