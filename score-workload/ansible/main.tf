@@ -138,7 +138,7 @@ resource "ansibleplay_run" "setup" {
         },
         k == local.first_service_name ? {} : {
           network_mode = "service:${local.first_service_name}"
-        }),
+        },
         try(v.resources.requests.memory, "") == "" ? {} : {
           mem_limit = lower(v.resources.requests.memory)
         },
@@ -150,7 +150,7 @@ resource "ansibleplay_run" "setup" {
         },
         try(v.resources.limits.cpu, 0) == 0 ? {} : {
           cpus = v.resources.limits.cpu
-        },
+        })
       }
     })
     compose_files = flatten([for k, v in var.containers : [for p, f in coalesce(v.files, {}) : sha256(join(",", k, p))]]...)
