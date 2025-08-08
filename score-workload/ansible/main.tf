@@ -136,7 +136,7 @@ resource "ansibleplay_run" "setup" {
     })
     compose_files = flatten([for k, v in var.containers : [for p, f in coalesce(v.files, {}) : sha256(join(",", k, p))]]...)
   })
-  depends_on = flatten(local_file.container_files, local_file.binary_container_files, [local_file.ssh_key])
+  depends_on = [local_file.container_files, local_file.binary_container_files, local_file.ssh_key]
 }
 
 output "loadbalancer" {
