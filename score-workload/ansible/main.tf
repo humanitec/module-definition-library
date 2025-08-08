@@ -118,8 +118,6 @@ resource "ansibleplay_run" "setup" {
           entrypoint = v.command
           command = v.args
           environment = coalesce(v.variables, {})
-          cpus = try(v.resources.limits.cpu, v.resources.requests.cpu, 0)
-          mem_limit = lower(try(v.resources.limits.memory, v.resources.requests.memory, ""))
           volumes = [ for p, f in coalesce(v.files, {}) : ( f.source != null ? {
             type = "bind"
             source = f.source
@@ -140,7 +138,19 @@ resource "ansibleplay_run" "setup" {
         },
         k == local.first_service_name ? {} : {
           network_mode = "service:${local.first_service_name}"
-        })
+        }),
+        try(v.resources.requests.memory, "") == "" ? {} : {
+          mem_limit = lower(v.resources.requests.memory)
+        },
+        try(v.resources.limits.memory, "") == "" ? {} : {
+          mem_limit = lower(v.resources.limits.memory)
+        },
+        try(v.resources.requests.cpu, 0) == 0 ? {} : {
+          cpus = v.resources.requests.cpu
+        },
+        try(v.resources.limits.cpu, 0) == 0 ? {} : {
+          cpus = v.resources.limits.cpu
+        },
       }
     })
     compose_files = flatten([for k, v in var.containers : [for p, f in coalesce(v.files, {}) : sha256(join(",", k, p))]]...)
