@@ -11,9 +11,13 @@ resource "tls_private_key" "ssh" {
   rsa_bits  = 2048
 }
 
+resource "random_id" "fleet_id" {
+  byte_length = 8
+}
+
 resource "google_compute_instance" "vm" {
   count        = 3
-  name         = "vm-${count.index + 1}"
+  name         = "vm-${random_id.fleet_id.hex}-${count.index + 1}"
   machine_type = "e2-micro"
 
   boot_disk {
@@ -35,7 +39,7 @@ resource "google_compute_instance" "vm" {
 }
 
 resource "google_compute_firewall" "ssh" {
-  name    = "allow-ssh"
+  name    = "allow-ssh-${random_id.fleet_id.hex}"
   network = "default"
 
   allow {
@@ -48,7 +52,7 @@ resource "google_compute_firewall" "ssh" {
 }
 
 resource "google_compute_firewall" "http" {
-  name    = "allow-http"
+  name    = "allow-http-${random_id.fleet_id.hex}"
   network = "default"
 
   allow {
@@ -60,7 +64,7 @@ resource "google_compute_firewall" "http" {
   target_tags   = ["http"]
 }
 resource "google_compute_instance_group" "vms" {
-  name = "vm-group"
+  name = "vm-group-${random_id.fleet_id.hex}"
   
   instances = google_compute_instance.vm[*].id
 
@@ -71,7 +75,7 @@ resource "google_compute_instance_group" "vms" {
 }
 
 resource "google_compute_backend_service" "default" {
-  name        = "vm-backend"
+  name        = "vm-backend-${random_id.fleet_id.hex}"
   port_name   = "http"
   protocol    = "HTTP"
   timeout_sec = 10
@@ -84,22 +88,22 @@ resource "google_compute_backend_service" "default" {
 }
 
 resource "google_compute_http_health_check" "default" {
-  name = "vm-health-check"
+  name = "vm-health-check-${random_id.fleet_id.hex}"
   port = 80
 }
 
 resource "google_compute_url_map" "default" {
-  name            = "vm-lb"
+  name            = "vm-lb-${random_id.fleet_id.hex}"
   default_service = google_compute_backend_service.default.id
 }
 
 resource "google_compute_target_http_proxy" "default" {
-  name    = "vm-proxy"
+  name    = "vm-proxy-${random_id.fleet_id.hex}"
   url_map = google_compute_url_map.default.id
 }
 
 resource "google_compute_global_forwarding_rule" "default" {
-  name       = "vm-forwarding-rule"
+  name       = "vm-forwarding-rule-${random_id.fleet_id.hex}"
   target     = google_compute_target_http_proxy.default.id
   port_range = "80"
 }
