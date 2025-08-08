@@ -75,7 +75,7 @@ variable "service" {
 
 resource "terraform_data" "install_ansible" {
   provisioner "local-exec" {
-    command = "apk add --no-cache ansible && sleep 2"
+    command = "apk add --no-cache ansible && sleep 10"
   }
   triggers_replace = {
     always_run = timestamp()
