@@ -66,7 +66,7 @@ resource "google_compute_firewall" "http" {
 resource "google_compute_instance_group" "vms" {
   name = "vm-group-${random_id.fleet_id.hex}"
   
-  instances = google_compute_instance.vm[*].id
+  instances = google_compute_instance.vm[*].selflink
 
   named_port {
     name = "http"
