@@ -72,6 +72,8 @@ resource "google_compute_instance_group" "vms" {
     name = "http"
     port = "80"
   }
+
+  depends_on = [google_compute_instance.vm]
 }
 
 resource "google_compute_backend_service" "default" {
