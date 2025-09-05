@@ -76,26 +76,3 @@ variable "service" {
   description = "The service section of the Score file."
   default     = null
 }
-
-variable "namespace" {
-  type        = string
-  description = "The Kubernetes namespace to deploy the resources into."
-}
-
-variable "service_account_name" {
-  type        = string
-  description = "The name of the service account to use for the pods."
-  default     = null
-}
-
-variable "additional_annotations" {
-  type        = map(string)
-  description = "Additional annotations to add to all resources."
-  default     = {}
-}
-
-variable "wait_for_rollout" {
-  type        = bool
-  description = "Whether to wait for the workload to be rolled out."
-  default     = true
-}
