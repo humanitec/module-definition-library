@@ -47,7 +47,7 @@ resource "aws_iam_role_policy" "ecr" {
 }
 
 locals {
-    first_container_name = sort(keys(var.containers))
+    first_container_name = sort(keys(var.containers))[0]
     first_container = var.containers[local.first_container_name]
 }
 
