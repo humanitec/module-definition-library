@@ -33,7 +33,8 @@ resource "aws_iam_role_policy" "ecr" {
         Resource = "arn:aws:ecr:eu-central-1:667740703053:repository/*"
         Action = [
           "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage"
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability",
         ]
       },
       {
