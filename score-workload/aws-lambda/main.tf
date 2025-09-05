@@ -52,7 +52,8 @@ resource "aws_lambda_function" "container_function" {
   
   package_type = "Image"
   image_uri    = "667740703053.dkr.ecr.eu-central-1.amazonaws.com/bentesting/demo-lambda:latest"
-  
+  architectures = ["arm64"]
+
   timeout     = 30
   memory_size = 512
 
