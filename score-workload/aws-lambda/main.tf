@@ -80,6 +80,14 @@ resource "aws_lambda_function" "container_function" {
 resource "aws_lambda_function_url" "container_function_url" {
   function_name      = aws_lambda_function.container_function.function_name
   authorization_type = "NONE"
+  cors {
+    allow_credentials = false
+    allow_origins     = ["*"]
+    allow_methods     = ["*"]
+    allow_headers     = ["date", "keep-alive"]
+    expose_headers    = ["date", "keep-alive"]
+    max_age          = 86400
+  }
 }
 
 output "endpoint" {
