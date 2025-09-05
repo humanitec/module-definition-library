@@ -55,6 +55,11 @@ resource "aws_lambda_function" "container_function" {
   
   timeout     = 30
   memory_size = 512
+
+  depends_on = [
+    aws_iam_role_policy.ecr,
+    aws_iam_role_policy_attachment.lambda_basic
+  ]
 }
 
 resource "aws_lambda_function_url" "container_function_url" {
