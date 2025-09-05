@@ -46,12 +46,26 @@ resource "aws_iam_role_policy" "ecr" {
   })
 }
 
+locals {
+    first_container_name = sort(keys(var.containers))
+    first_container = var.containers[local.first_container_name]
+}
+
 resource "aws_lambda_function" "container_function" {
   function_name = "platform-demo-container-${random_id.entropy.hex}"
   role         = aws_iam_role.role.arn
   
   package_type = "Image"
-  image_uri    = "667740703053.dkr.ecr.eu-central-1.amazonaws.com/bentesting/demo-lambda:latest"
+  image_uri    = local.first_container.image
+  image_config {
+    entry_point = local.first_container.command
+    command = local.first_container.args
+  }
+
+  environment {
+    variables = local.first_container.variables
+  }
+
   architectures = ["arm64"]
 
   timeout     = 30
