@@ -16,7 +16,7 @@ terraform {
   }
 }
 
-data "kubernetes_secret" "subject" {
+data "kubernetes_secret_v1" "subject" {
   metadata {
     name      = var.secret_name
     namespace = var.namespace
@@ -25,11 +25,11 @@ data "kubernetes_secret" "subject" {
 
 output "humanitec_metadata" {
   value = {
-    "Kubernetes-Namespace" = data.kubernetes_secret.subject.metadata[0].namespace,
+    "Kubernetes-Namespace" = data.kubernetes_secret_v1.subject.metadata[0].namespace,
   }
 }
 
 output "values" {
-  value     = data.kubernetes_secret.subject.data
+  value     = data.kubernetes_secret_v1.subject.data
   sensitive = true
 }
