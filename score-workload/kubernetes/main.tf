@@ -126,6 +126,8 @@ resource "kubernetes_deployment_v1" "default" {
       match_labels = local.pod_labels
     }
 
+    replicas = var.replicas
+
     template {
       metadata {
         annotations = local.pod_annotations
@@ -321,6 +323,8 @@ resource "kubernetes_stateful_set_v1" "default" {
     selector {
       match_labels = local.pod_labels
     }
+
+    replicas = var.replicas
 
     service_name = var.metadata.name
 

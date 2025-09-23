@@ -77,6 +77,16 @@ variable "service" {
   default     = null
 }
 
+variable "replicas" {
+  type        = number
+  description = "Optional number of replicas to set."
+  default     = null
+  validation {
+    condition     = var.replicas >= 0
+    error_message = "Replicas must be >= 0 if set"
+  }
+}
+
 variable "namespace" {
   type        = string
   description = "The Kubernetes namespace to deploy the resources into."

@@ -3,10 +3,12 @@ module "score_workload" {
 
   namespace = "default"
 
+  replicas = 7
+
   metadata = {
     name = "deployment-full"
     annotations = {
-      "score.canyon.com/workload-type" = "Deployment"
+      "score.humanitec.dev/workload-type" = "Deployment"
     }
   }
 

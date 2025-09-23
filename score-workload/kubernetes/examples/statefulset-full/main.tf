@@ -2,11 +2,12 @@ module "score_workload" {
   source = "../../"
 
   namespace = "default"
+  replicas  = 1
 
   metadata = {
     name = "statefulset-full"
     annotations = {
-      "score.canyon.com/workload-type" = "StatefulSet"
+      "score.humanitec.dev/workload-type" = "StatefulSet"
     }
   }
 
