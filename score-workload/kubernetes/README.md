@@ -42,7 +42,7 @@ The following input variables can be set in the `module_inputs` of the `hctl cre
 | `service_account_name`   | The name of the service account to use for the pods.  | `string`      | `null`  | no       |
 | `additional_annotations` | Additional annotations to add to all resources.       | `map(string)` | `{}`    | no       |
 | `wait_for_rollout`       | Whether to wait for the workload to be rolled out.    | `bool`        | `true`  | no       |
-| `replicas`.              | Optional number of replicas to deploy.                | `number`      | `null`  | no       |
+| `replicas`               | Optional number of replicas to deploy.                | `number`      | `null`  | no       |
 
 For example, to set the `service_account_name` and disable `wait_for_rollout`, you would use:
 
