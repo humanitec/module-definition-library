@@ -6,7 +6,7 @@ module "score_workload" {
   metadata = {
     name = "deployment-sparse"
     annotations = {
-      "score.canyon.com/workload-type" = "Deployment"
+      "score.humanitec.dev/workload-type" = "Deployment"
     }
   }
 

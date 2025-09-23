@@ -8,18 +8,19 @@ This is a Terraform / OpenTofu compatible module to be used to provision `score-
 2. There must be a resource type setup for `score-workload`, for example:
 
     ```
-    canyon create resource-type score-workload --set=name='Score Workload' --set=output_schema='{"type":"object","properties":{}}'
+    hctl create resource-type score-workload --set=description='Score Workload' --set=output_schema='{"type":"object","properties":{}}'
     ```
 
 ## Installation
 
-Install this with the `canyon` CLI, you should replace the `CHANGEME` in the provider mapping with your real provider type and alias for Kubernetes; and replace the CHANGEME in module_inputs with the real target namespace.
+Install this with the `hctl` CLI, you should replace the `CHANGEME` in the provider mapping with your real provider type and alias for Kubernetes; and replace the CHANGEME in module_inputs with the real target namespace.
 
 ```shell
-canyon create module-definition \
+hctl create module \
     --set=resource_type=score-workload \
     --set=module_source=git::https://github.com/humanitec/module-definition-library//score-workload/kubernetes \
     --set=provider_mapping='{"kubernetes": "CHANGEME"}' \
+    --set=module_params='{"metadata": {"type": "map"},"containers": {"type": "map"}, "service": {"type": "map", "is_optional": true}}' \
     --set=module_inputs='{"namespace": "CHANGEME"}'
 ```
 
@@ -29,23 +30,24 @@ The following outputs are exposed
 
 | Name            | Description                                             | Type     |
 | --------------- | ------------------------------------------------------- | -------- |
-| `loadbalancer`  | The dns name of the clusterip service for this workload | `string` |
+| `endpoint`      | The dns name of the clusterip service for this workload | `string` |
 
 ## Module Inputs
 
-The following input variables can be set in the `module_inputs` of the `canyon create module-definition` command.
+The following input variables can be set in the `module_inputs` of the `hctl create module` command.
 
-| Name                     | Description                                           | Type       | Default | Required |
-| ------------------------ | ----------------------------------------------------- | ---------- | ------- | -------- |
-| `namespace`              | The namespace to deploy to.                           | `string`   |         | yes      |
-| `service_account_name`   | The name of the service account to use for the pods.  | `string`   | `null`  | no       |
+| Name                     | Description                                           | Type          | Default | Required |
+| ------------------------ | ----------------------------------------------------- | ------------- | ------- | -------- |
+| `namespace`              | The namespace to deploy to.                           | `string`      |         | yes      |
+| `service_account_name`   | The name of the service account to use for the pods.  | `string`      | `null`  | no       |
 | `additional_annotations` | Additional annotations to add to all resources.       | `map(string)` | `{}`    | no       |
-| `wait_for_rollout`       | Whether to wait for the workload to be rolled out.    | `bool`     | `true`  | no       |
+| `wait_for_rollout`       | Whether to wait for the workload to be rolled out.    | `bool`        | `true`  | no       |
+| `replicas`               | Optional number of replicas to deploy.                | `number`      | `null`  | no       |
 
 For example, to set the `service_account_name` and disable `wait_for_rollout`, you would use:
 
 ```shell
-canyon create module-definition \
+hctl create module \
     ...
     --set=module_inputs='{"namespace": "my-namespace", "service_account_name": "my-sa", "wait_for_rollout": false}'
 ```

@@ -6,7 +6,7 @@ module "score_workload" {
   metadata = {
     name = "statefulset-sparse"
     annotations = {
-      "score.canyon.com/workload-type" = "StatefulSet"
+      "score.humanitec.dev/workload-type" = "StatefulSet"
     }
   }
 
