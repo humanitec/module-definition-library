@@ -16,7 +16,7 @@ This is a Terraform / OpenTofu compatible module to be used to provision `score-
 Install this with the `hctl` CLI, you should replace the `CHANGEME` in the provider mapping with your real provider type and alias for Kubernetes; and replace the CHANGEME in module_inputs with the real target namespace.
 
 ```shell
-hctl create module-definition \
+hctl create module \
     --set=resource_type=score-workload \
     --set=module_source=git::https://github.com/humanitec/module-definition-library//score-workload/kubernetes \
     --set=provider_mapping='{"kubernetes": "CHANGEME"}' \
