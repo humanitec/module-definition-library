@@ -82,7 +82,7 @@ variable "replicas" {
   description = "Optional number of replicas to set."
   default     = null
   validation {
-    condition     = var.replicas == null || var.replicas >= 0
+    condition     = var.replicas == null ? true : var.replicas >= 0
     error_message = "Replicas must be >= 0 if set"
   }
 }

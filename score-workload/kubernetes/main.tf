@@ -41,7 +41,7 @@ locals {
     { "checksum/config" = sha256(local.stable_secret_json) }
   )
 
-  create_service = var.service != null && length(coalesce(var.service.ports, {})) > 0
+  create_service = var.service != null ? length(coalesce(var.service.ports, {})) > 0 : false
 
   # Flatten files from all containers into a map for easier iteration.
   # We only care about files with inline content for creating secrets.
