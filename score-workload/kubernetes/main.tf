@@ -115,9 +115,9 @@ resource "kubernetes_deployment_v1" "default" {
 
   wait_for_rollout = var.wait_for_rollout
   timeouts {
-    create = "1m"
-    update = "1m"
-    delete = "1m"
+    create = var.wait_for_timeout
+    update = var.wait_for_timeout
+    delete = var.wait_for_timeout
   }
 
   spec {
@@ -314,9 +314,9 @@ resource "kubernetes_stateful_set_v1" "default" {
 
   wait_for_rollout = var.wait_for_rollout
   timeouts {
-    create = "1m"
-    update = "1m"
-    delete = "1m"
+    create = var.wait_for_timeout
+    update = var.wait_for_timeout
+    delete = var.wait_for_timeout
   }
 
   spec {

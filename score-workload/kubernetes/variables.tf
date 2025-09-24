@@ -109,3 +109,9 @@ variable "wait_for_rollout" {
   description = "Whether to wait for the workload to be rolled out."
   default     = true
 }
+
+variable "wait_for_timeout" {
+  type        = string
+  description = "Time to wait for create, update, or delete including rollout time if wait_for_rollout is enabled"
+  default     = "1m"
+}
