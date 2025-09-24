@@ -82,7 +82,7 @@ variable "replicas" {
   description = "Optional number of replicas to set."
   default     = null
   validation {
-    condition     = var.replicas == null || var.replicas >= 0
+    condition     = var.replicas == null ? true : var.replicas >= 0
     error_message = "Replicas must be >= 0 if set"
   }
 }
@@ -108,4 +108,10 @@ variable "wait_for_rollout" {
   type        = bool
   description = "Whether to wait for the workload to be rolled out."
   default     = true
+}
+
+variable "wait_for_timeout" {
+  type        = string
+  description = "Time to wait for create, update, or delete including rollout time if wait_for_rollout is enabled"
+  default     = "1m"
 }
