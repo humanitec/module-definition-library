@@ -68,4 +68,44 @@ run "plan" {
   }
 
   command = plan
+
+  assert {
+    condition = kubernetes_deployment_v1.default[0].metadata[0].name == "deployment-full"
+    error_message = "incorrect dep name"
+  }
+
+  assert {
+    condition = length(kubernetes_stateful_set_v1.default) == 0
+    error_message = "stateful set should not exist"
+  }
+
+  assert {
+    condition = kubernetes_service_v1.default[0].metadata[0].name == "deployment-full"
+    error_message = "incorrect service name"
+  }
+
+  assert {
+    condition = length(kubernetes_secret_v1.files) == 2
+    error_message = "incorrect secret files: ${nonsensitive(jsonencode(kubernetes_secret_v1.files))}"
+  }
+
+  assert {
+    condition = kubernetes_secret_v1.files["main-eca5007265"].metadata[0].name == "deployment-full-main-eca5007265"
+    error_message = "incorrect secret name"
+  }
+
+  assert {
+    condition = kubernetes_secret_v1.files["main-f74e1bb35d"].metadata[0].name == "deployment-full-main-f74e1bb35d"
+    error_message = "incorrect secret name"
+  }
+
+  assert {
+    condition = length(kubernetes_secret_v1.env) == 1
+    error_message = "incorrect secret env: ${nonsensitive(jsonencode(kubernetes_secret_v1.env))}"
+  }
+
+  assert {
+    condition = kubernetes_secret_v1.env["main"].metadata[0].name == "deployment-full-main-env"
+    error_message = "incorrect secret env"
+  }
 }
