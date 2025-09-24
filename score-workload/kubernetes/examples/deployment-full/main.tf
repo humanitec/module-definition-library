@@ -4,6 +4,7 @@ module "score_workload" {
   namespace = "default"
 
   replicas = 7
+  wait_for_timeout = "2m"
 
   metadata = {
     name = "deployment-full"
