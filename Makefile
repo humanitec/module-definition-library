@@ -27,7 +27,7 @@ test: TF_PLUGIN_CACHE_DIR=$$(mktemp -d)
 test:
 	for f in $$(find . -name .terraform); do rm -r $${f}; done
 	for f in $$(find . -name .terraform.lock.hcl); do rm -r $${f}; done
-	for f in `find . -name main.tf`; do cd $$(dirname $$f); tofu init; tofu validate; cd -; done
+	for f in `find . -name main.tf`; do (cd $$(dirname $$f) && echo $$f && tofu init -backend=false && tofu validate) || exit 1; done
 
 ## Format all terraform files
 .PHONY: fmt
