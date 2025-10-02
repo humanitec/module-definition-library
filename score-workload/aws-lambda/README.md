@@ -1,21 +1,21 @@
-# score-workload/kubernetes
+# score-workload/aws-lambda
 
-This is a Terraform / OpenTofu compatible module to be used to provision `score-workload` resources ontop of Kubernetes for the Humanitec Orchestrator.
+This is a Terraform / OpenTofu compatible module to be used to provision `score-workload` resources ontop of AWS Lambda container functions.
 
 ## Requirements
 
-1. There must be a module provider setup for `kubernetes` (`hashicorp/kubernetes`).
+1. There must be a module provider setup for `aws` (`hashicorp/aws`).
 2. There must be a resource type setup for `score-workload`, see [README](../README.md).
 
 ## Installation
 
-Install this with the `hctl` CLI, you should replace the `CHANGEME` in the provider mapping with your real provider type and alias for Kubernetes; and replace the CHANGEME in module_inputs with the real target namespace.
+Install this with the `hctl` CLI, you should replace the `CHANGEME` in the provider mapping with your real provider type and alias for AWS; and replace the CHANGEME in module_inputs with the real target namespace.
 
 ```shell
 hctl create module \
     --set=resource_type=score-workload \
-    --set=module_source=git::https://github.com/humanitec/module-definition-library//score-workload/kubernetes \
-    --set=provider_mapping='{"kubernetes": "CHANGEME"}' \
+    --set=module_source=git::https://github.com/humanitec/module-definition-library//score-workload/aws-lambda \
+    --set=provider_mapping='{"aws": "CHANGEME"}' \
     --set=module_params='{"metadata": {"type": "map"},"containers": {"type": "map"}, "service": {"type": "map", "is_optional": true}}' \
     --set=module_inputs='{"namespace": "CHANGEME"}'
 ```
@@ -48,20 +48,3 @@ hctl create module \
     ...
     --set=module_inputs='{"namespace": "my-namespace", "service_account_name": "my-sa", "wait_for_rollout": false}'
 ```
-
-### Dynamic namespaces
-
-Instead of a hardcoded destination namespace, you can use the resource graph to provision a namespace.
-
-1. Ensure there is a resource type for the namespace (eg: `k8s-namespace`) and that there is a definition and rule set up for it in the target environments.
-2. Add a dependency to the create module definition request:
-
-    ```
-    --set=dependencies='{"ns": {"type": "k8s-namespace"}}'
-    ```
-
-3. In the module inputs replace this with the placeholder:
-
-    ```
-    --set=module_inputs='{"namespace": "${ resources.ns.outputs.name }"}'
-    ```
