@@ -52,3 +52,9 @@ variable "region" {
   description = "Optional region override otherwise the function will be deployed in the same region as the provider"
   default     = null
 }
+
+variable "timeout" {
+  type        = number
+  description = "The underlying function timeout in seconds"
+  default     = 3
+}

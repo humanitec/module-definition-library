@@ -24,9 +24,10 @@ hctl create module \
 
 The following outputs are exposed
 
-| Name            | Description                                             | Type     |
-| --------------- | ------------------------------------------------------- | -------- |
-| `endpoint`      | The dns name of the clusterip service for this workload | `string` |
+| Name            | Description                                                            | Type     |
+| --------------- | ---------------------------------------------------------------------- | -------- |
+| `endpoint`      | The dns name of the function invoke url if service ports was not empty | `string` |
+| `function_arn`  | The lambda function ARN                                                | `string` |
 
 ## Module Inputs
 

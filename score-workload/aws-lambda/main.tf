@@ -87,11 +87,12 @@ resource "aws_lambda_function" "container_function" {
 
   architectures = var.architectures
 
+  timeout     = var.timeout
   memory_size = local.memory_size
 }
 
 resource "aws_lambda_function_url" "container_function_url" {
   count              = local.has_service ? 1 : 0
   function_name      = aws_lambda_function.container_function.function_name
-  authorization_type = "AWS_IAM"
+  authorization_type = lookup(coalesce(try(var.metadata.annotations, null), {}), "score.humanitec.dev/function-invoke-authorization", "AWS_IAM")
 }
