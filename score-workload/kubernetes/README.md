@@ -1,15 +1,11 @@
-# score-workload-tofu
+# score-workload/kubernetes
 
 This is a Terraform / OpenTofu compatible module to be used to provision `score-workload` resources ontop of Kubernetes for the Humanitec Orchestrator.
 
 ## Requirements
 
 1. There must be a module provider setup for `kubernetes` (`hashicorp/kubernetes`).
-2. There must be a resource type setup for `score-workload`, for example:
-
-    ```
-    hctl create resource-type score-workload --set=description='Score Workload' --set=output_schema='{"type":"object","properties":{}}'
-    ```
+2. There must be a resource type setup for `score-workload`, see [README](../README.md).
 
 ## Installation
 
