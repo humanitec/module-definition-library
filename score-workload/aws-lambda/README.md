@@ -9,7 +9,7 @@ This is a Terraform / OpenTofu compatible module to be used to provision `score-
 
 ## Installation
 
-Install this with the `hctl` CLI, you should replace the `CHANGEME` in the provider mapping with your real provider type and alias for AWS; and replace the CHANGEME in module_inputs with the real target namespace.
+Install this with the `hctl` CLI, you should replace the `CHANGEME` in the provider mapping with your real provider type and alias for AWS.
 
 ```shell
 hctl create module \
@@ -17,7 +17,7 @@ hctl create module \
     --set=module_source=git::https://github.com/humanitec/module-definition-library//score-workload/aws-lambda \
     --set=provider_mapping='{"aws": "CHANGEME"}' \
     --set=module_params='{"metadata": {"type": "map"},"containers": {"type": "map"}, "service": {"type": "map", "is_optional": true}}' \
-    --set=module_inputs='{"namespace": "CHANGEME"}'
+    --set=module_inputs='{}'
 ```
 
 ## Resource Outputs
