@@ -36,7 +36,7 @@ The following input variables can be set in the `module_inputs` of the `hctl cre
 
 | Name                    | Description                                                                        | Type           | Default | Required |
 | ----------------------- | ---------------------------------------------------------------------------------- | -------------- | ------- | -------- |
-| `iam_role_arn           | An existing IAM role to use for the Function, one will be created if not provided. | `string`       |         | no       |
+| `iam_role_arn`          | An existing IAM role to use for the Function, one will be created if not provided. | `string`       |         | no       |
 | `architectures`         | The Lambda architecture (x86_64 or arm64). Defaults to x86_64.                     | `list(string)` | `null`  | `no`     |
 | `aws_region`            | The AWS region to deploy the function to. Defaults to the region of the provider.  | `string`       | `null`  | no       |
 | `timeout_in_seconds`    | Timeout of the function.                                                           | `integer`      | `3`     | no       |
