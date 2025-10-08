@@ -37,7 +37,7 @@ variable "service" {
 
 variable "iam_role_arn" {
   type        = string
-  description = "An optional IAM role to run the function as. A simple role will be created if this is not supplied"
+  description = "An optional IAM role to run the function as. A role will be created if this is not supplied"
   default     = null
 }
 
@@ -47,14 +47,26 @@ variable "architectures" {
   default     = null
 }
 
-variable "region" {
+variable "aws_region" {
   type        = string
   description = "Optional region override otherwise the function will be deployed in the same region as the provider"
   default     = null
 }
 
-variable "timeout" {
+variable "timeout_in_seconds" {
   type        = number
   description = "The underlying function timeout in seconds"
   default     = 3
+}
+
+variable "is_ecr_policy_enabled" {
+  type        = bool
+  description = "Whether to auto create a policy for ECR access, enabled by default"
+  default     = true
+}
+
+variable "additional_tags" {
+  type        = map(string)
+  description = "A set of additional tags to add to aws resources provisioned by this module"
+  default     = {}
 }

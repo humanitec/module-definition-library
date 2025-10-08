@@ -24,28 +24,21 @@ hctl create module \
 
 The following outputs are exposed
 
-| Name            | Description                                                            | Type     |
-| --------------- | ---------------------------------------------------------------------- | -------- |
-| `endpoint`      | The dns name of the function invoke url if service ports was not empty | `string` |
-| `function_arn`  | The lambda function ARN                                                | `string` |
+| Name           | Description                                                            | Type     |
+| -------------- | ---------------------------------------------------------------------- | -------- |
+| `endpoint`     | The dns name of the function invoke url if service ports was not empty | `string` |
+| `function_arn` | The lambda function ARN                                                | `string` |
+| `iam_role_arn` | The ARN of the IAM role associated with the Function.                  | `string` |
 
 ## Module Inputs
 
 The following input variables can be set in the `module_inputs` of the `hctl create module` command.
 
-| Name                     | Description                                           | Type          | Default | Required |
-| ------------------------ | ----------------------------------------------------- | ------------- | ------- | -------- |
-| `namespace`              | The namespace to deploy to.                           | `string`      |         | yes      |
-| `service_account_name`   | The name of the service account to use for the pods.  | `string`      | `null`  | no       |
-| `additional_annotations` | Additional annotations to add to all resources.       | `map(string)` | `{}`    | no       |
-| `wait_for_rollout`       | Whether to wait for the workload to be rolled out.    | `bool`        | `true`  | no       |
-| `wait_for_timeout`       | Timeout to wait                                       | `string`      | `"1m"`  | no       |
-| `replicas`               | Optional number of replicas to deploy.                | `number`      | `null`  | no       |
-
-For example, to set the `service_account_name` and disable `wait_for_rollout`, you would use:
-
-```shell
-hctl create module \
-    ...
-    --set=module_inputs='{"namespace": "my-namespace", "service_account_name": "my-sa", "wait_for_rollout": false}'
-```
+| Name                    | Description                                                                        | Type           | Default | Required |
+| ----------------------- | ---------------------------------------------------------------------------------- | -------------- | ------- | -------- |
+| `iam_role_arn           | An existing IAM role to use for the Function, one will be created if not provided. | `string`       |         | no       |
+| `architectures`         | The Lambda architecture (x86_64 or arm64). Defaults to x86_64.                     | `list(string)` | `null`  | `no`     |
+| `aws_region`            | The AWS region to deploy the function to. Defaults to the region of the provider.  | `string`       | `null`  | no       |
+| `timeout_in_seconds`    | Timeout of the function.                                                           | `integer`      | `3`     | no       |
+| `is_ecr_policy_enabled` | Whether to create the IAM policy for pulling images from ECR.                      | `bool`         | `true`  | no       |
+| `additional_tags`       | Additional AWS tags to add to AWS resources                                        | `map(string)`  | `{}`    | no       |

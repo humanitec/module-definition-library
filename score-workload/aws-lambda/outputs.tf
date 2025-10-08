@@ -1,5 +1,5 @@
 locals {
-  endpoint = local.has_service ? aws_lambda_function_url.container_function_url[0].function_url : ""
+  endpoint = local.has_service ? aws_lambda_function_url.container_function_url[0].function_url : "undefined"
 }
 
 output "endpoint" {
@@ -8,6 +8,10 @@ output "endpoint" {
 
 output "function_arn" {
   value = aws_lambda_function.container_function.arn
+}
+
+output "iam_role_arn" {
+  value = var.iam_role_arn == null ? aws_iam_role.role[0].name : var.iam_role_arn
 }
 
 output "humanitec_metadata" {

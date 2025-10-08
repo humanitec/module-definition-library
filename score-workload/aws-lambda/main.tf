@@ -26,32 +26,28 @@ resource "aws_iam_role" "role" {
       }
     ]
   })
+  tags = var.additional_tags
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_basic" {
-  count      = var.iam_role_arn == null ? 1 : 0
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-  role       = aws_iam_role.role[0].name
+  role       = var.iam_role_arn == null ? aws_iam_role.role[0].name : var.iam_role_arn
 }
 
 resource "aws_iam_role_policy" "ecr" {
-  count = var.iam_role_arn == null ? 1 : 0
+  count = var.iam_role_arn == null && var.is_ecr_policy_enabled ? 1 : 0
   role  = aws_iam_role.role[0].id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Resource = "arn:aws:ecr:eu-central-1:667740703053:repository/*"
+        Effect = "Allow"
         Action = [
           "ecr:GetDownloadUrlForLayer",
           "ecr:BatchGetImage",
           "ecr:BatchCheckLayerAvailability",
+          "ecr:GetAuthorizationToken",
         ]
-      },
-      {
-        Effect   = "Allow"
-        Action   = "ecr:GetAuthorizationToken"
         Resource = "*"
       }
     ]
@@ -73,6 +69,7 @@ locals {
 resource "aws_lambda_function" "container_function" {
   function_name = "score-workload-${random_id.entropy.hex}"
   role          = var.iam_role_arn != null ? var.iam_role_arn : aws_iam_role.role[0].arn
+  region        = var.aws_region
 
   package_type = "Image"
   image_uri    = var.containers.main.image
@@ -87,8 +84,10 @@ resource "aws_lambda_function" "container_function" {
 
   architectures = var.architectures
 
-  timeout     = var.timeout
+  timeout     = var.timeout_in_seconds
   memory_size = local.memory_size
+
+  tags = var.additional_tags
 }
 
 resource "aws_lambda_function_url" "container_function_url" {
